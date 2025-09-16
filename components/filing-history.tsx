@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileText, TrendingUp, TrendingDown } from "lucide-react";
 import { formatCurrency, formatLargeNumber } from "@/lib/api";
+import { getFormTypeName } from "@/lib/utils";
 
 interface FilingHistoryProps {
   filings: Filing[];
@@ -51,7 +52,7 @@ export function FilingHistory({ filings }: FilingHistoryProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <h4 className="font-semibold">Tax Year {filing.tax_prd_yr}</h4>
                       <Badge variant="outline" className="text-xs">
-                        Form {filing.formtype}
+                        Form {getFormTypeName(filing.formtype)}
                       </Badge>
                       {index === 0 && (
                         <Badge variant="default" className="text-xs">

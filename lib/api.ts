@@ -10,11 +10,14 @@ export class ApiError extends Error {
   }
 }
 
-async function fetchApi<T>(endpoint: string): Promise<T> {
+async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
       'accept': 'application/json',
+      'content-type': 'application/json',
+      ...options?.headers,
     },
+    ...options,
   });
 
   if (!response.ok) {
@@ -34,7 +37,7 @@ export async function getOrganization(ein: number): Promise<OrganizationWithFili
 
 export async function getOrganizationEnrichment(ein: number): Promise<OrganizationEnrichment | null> {
   try {
-    return await fetchApi<OrganizationEnrichment>(`/enrichment/organization/ein/${ein}`);
+    return await fetchApi<OrganizationEnrichment>(`/enrichment/organization/${ein}`);
   } catch (error) {
     if (error instanceof ApiError && error.status === 404) {
       return null;
@@ -54,6 +57,17 @@ export async function searchOrganizations(filters: SearchFilters): Promise<Seman
   const endpoint = queryString ? `/semantic-search/?${queryString}` : '/semantic-search/';
   
   return fetchApi<SemanticSearchResponse>(endpoint);
+}
+
+export async function enrichOrganization(ein: number): Promise<void> {
+  await fetchApi<void>(`/enrichment/organization/${ein}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      force_refresh: false,
+      include_website_scraping: true,
+      include_apollo_enrichment: true
+    })
+  });
 }
 
 export function formatCurrency(amount: string | number): string {

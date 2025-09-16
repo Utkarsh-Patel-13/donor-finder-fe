@@ -56,10 +56,6 @@ export function DonorSearchCard({ searchResult, query }: DonorSearchCardProps) {
             <span className="line-clamp-1">{location}</span>
           </div>
           
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Building2 className="h-4 w-4 flex-shrink-0" />
-            <span className="line-clamp-1">{searchResult.address}</span>
-          </div>
           
           <div className="flex flex-wrap gap-2">
             {searchResult.ntee_code && (
@@ -95,9 +91,6 @@ export function DonorSearchCard({ searchResult, query }: DonorSearchCardProps) {
             </Badge>
           </div>
           
-          <div className="text-xs text-muted-foreground">
-            Last updated: {new Date(searchResult.updated_at).toLocaleDateString()}
-          </div>
         </CardContent>
       </Card>
     </Link>
