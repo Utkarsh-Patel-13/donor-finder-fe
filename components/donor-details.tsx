@@ -1,4 +1,4 @@
-import { OrganizationWithFilings } from "@/lib/types";
+import { OrganizationWithFilings, OrganizationEnrichment } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,23 +9,31 @@ import {
   TrendingUp,
   DollarSign,
   FileText,
-  Download
+  Download,
+  Globe,
+  Users,
+  Mail,
+  Phone,
+  Briefcase,
+  Newspaper,
+  MapPin,
+  User
 } from "lucide-react";
 import { formatCurrency, formatLargeNumber } from "@/lib/api";
 import { FilingHistory } from "./filing-history";
 
 interface DonorDetailsProps {
   organization: OrganizationWithFilings;
+  enrichment?: OrganizationEnrichment | null;
 }
 
-export function DonorDetails({ organization }: DonorDetailsProps) {
+export function DonorDetails({ organization, enrichment }: DonorDetailsProps) {
   const location = [organization.city, organization.state].filter(Boolean).join(", ");
   const latestFiling = organization.filings?.[0];
   
   return (
     <div className="space-y-8">
       {/* Organization Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -63,6 +71,14 @@ export function DonorDetails({ organization }: DonorDetailsProps) {
             <div>
               <h4 className="font-medium text-sm text-muted-foreground mb-2">External Links</h4>
               <div className="flex flex-wrap gap-2">
+                {enrichment?.website_url && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={enrichment.website_url} target="_blank" rel="noopener noreferrer">
+                      <Globe className="h-4 w-4 mr-2" />
+                      Website
+                    </a>
+                  </Button>
+                )}
                 {organization.guidestar_url && (
                   <Button variant="outline" size="sm" asChild>
                     <a href={organization.guidestar_url} target="_blank" rel="noopener noreferrer">
@@ -84,50 +100,240 @@ export function DonorDetails({ organization }: DonorDetailsProps) {
           </CardContent>
         </Card>
         
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="h-5 w-5" />
-                Last Updated
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {new Date(organization.updated_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </p>
-            </CardContent>
-          </Card>
-          
-          {latestFiling && (
+
+      {/* Enrichment Data */}
+      {enrichment && (
+        <>
+          {/* Company Information */}
+          {enrichment.apollo_company_data && (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <FileText className="h-5 w-5" />
-                  Latest Filing ({latestFiling.tax_prd_yr})
+                <CardTitle className="flex items-center gap-2">
+                  <Briefcase className="h-5 w-5" />
+                  Company Information
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {latestFiling.pdf_url && (
-                  <Button variant="outline" size="sm" className="w-full mb-3" asChild>
-                    <a href={latestFiling.pdf_url} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </a>
-                  </Button>
-                )}
-                <div className="text-xs text-muted-foreground">
-                  Form Type: {latestFiling.formtype}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {enrichment.apollo_company_data.description && (
+                    <div className="md:col-span-2">
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Description</h4>
+                      <p className="text-sm">{enrichment.apollo_company_data.description}</p>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.industry && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Industry</h4>
+                      <p className="text-sm">{enrichment.apollo_company_data.industry}</p>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.employee_count > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Employee Count</h4>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-blue-600" />
+                        <p className="text-sm">{enrichment.apollo_company_data.employee_count.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.revenue && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Revenue</h4>
+                      <p className="text-sm">{enrichment.apollo_company_data.revenue}</p>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.founded_year > 0 && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Founded</h4>
+                      <p className="text-sm">{enrichment.apollo_company_data.founded_year}</p>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.headquarters_address && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Headquarters</h4>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-green-600" />
+                        <p className="text-sm">{enrichment.apollo_company_data.headquarters_address}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {enrichment.apollo_company_data.domain && (
+                    <div>
+                      <h4 className="font-medium text-sm text-muted-foreground mb-1">Domain</h4>
+                      <p className="text-sm">{enrichment.apollo_company_data.domain}</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
           )}
-        </div>
-      </div>
+
+          {/* Leadership and Contacts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Leadership Information */}
+            {enrichment.leadership_info && enrichment.leadership_info.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Leadership Team
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {enrichment.leadership_info.map((leader, index) => (
+                      <div key={index} className="border-b last:border-b-0 pb-3 last:pb-0">
+                        {leader.name && (
+                          <h4 className="font-medium text-sm">{leader.name}</h4>
+                        )}
+                        {leader.title && (
+                          <p className="text-sm text-muted-foreground">{leader.title}</p>
+                        )}
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {leader.email && (
+                            <Badge variant="outline" className="text-xs">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {leader.email}
+                            </Badge>
+                          )}
+                          {leader.phone && (
+                            <Badge variant="outline" className="text-xs">
+                              <Phone className="h-3 w-3 mr-1" />
+                              {leader.phone}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Apollo Contacts */}
+            {enrichment.apollo_contacts && enrichment.apollo_contacts.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Key Contacts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {enrichment.apollo_contacts.slice(0, 5).map((contact, index) => (
+                      <div key={index} className="border-b last:border-b-0 pb-3 last:pb-0">
+                        {contact.name && (
+                          <h4 className="font-medium text-sm">{contact.name}</h4>
+                        )}
+                        {contact.title && (
+                          <p className="text-sm text-muted-foreground">{contact.title}</p>
+                        )}
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {contact.email && (
+                            <Badge variant="outline" className="text-xs">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {contact.email}
+                            </Badge>
+                          )}
+                          {contact.phone && (
+                            <Badge variant="outline" className="text-xs">
+                              <Phone className="h-3 w-3 mr-1" />
+                              {contact.phone}
+                            </Badge>
+                          )}
+                          {contact.linkedin_url && (
+                            <Button variant="outline" size="sm" asChild className="h-6 text-xs">
+                              <a href={contact.linkedin_url} target="_blank" rel="noopener noreferrer">
+                                LinkedIn
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Contact Information */}
+          {enrichment.contact_info && enrichment.contact_info.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Contact Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {enrichment.contact_info.map((contact, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      {contact.type === 'email' && <Mail className="h-4 w-4 text-blue-600" />}
+                      {contact.type === 'phone' && <Phone className="h-4 w-4 text-green-600" />}
+                      <div>
+                        <p className="text-sm font-medium">{contact.type}</p>
+                        <p className="text-sm text-muted-foreground">{contact.value}</p>
+                        {contact.verified && (
+                          <Badge variant="secondary" className="text-xs mt-1">Verified</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recent News */}
+          {enrichment.recent_news && enrichment.recent_news.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Newspaper className="h-5 w-5" />
+                  Recent News
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {enrichment.recent_news.map((news, index) => (
+                    <div key={index} className="border-b last:border-b-0 pb-4 last:pb-0">
+                      {news.title && (
+                        <h4 className="font-medium text-sm mb-1">
+                          {news.url ? (
+                            <a 
+                              href={news.url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="hover:text-blue-600 hover:underline"
+                            >
+                              {news.title}
+                            </a>
+                          ) : (
+                            news.title
+                          )}
+                        </h4>
+                      )}
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        {news.source && <span>{news.source}</span>}
+                        {news.date && <span>{new Date(news.date).toLocaleDateString()}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
 
       {/* Financial Overview */}
       {latestFiling && (

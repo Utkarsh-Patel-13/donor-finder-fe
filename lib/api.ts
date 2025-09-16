@@ -1,4 +1,4 @@
-import { Organization, OrganizationWithFilings } from './types';
+import { Organization, OrganizationWithFilings, SemanticSearchResponse, SearchFilters, OrganizationEnrichment } from './types';
 import { config } from './config';
 
 const API_BASE_URL = config.apiUrl;
@@ -30,6 +30,32 @@ export async function getOrganizations(limit: number = 50, offset: number = 0): 
 
 export async function getOrganization(ein: number): Promise<OrganizationWithFilings> {
   return fetchApi<OrganizationWithFilings>(`/organizations/${ein}`);
+}
+
+export async function getOrganizationEnrichment(ein: number): Promise<OrganizationEnrichment | null> {
+  try {
+    return await fetchApi<OrganizationEnrichment>(`/enrichment/organization/ein/${ein}`);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function searchOrganizations(filters: SearchFilters): Promise<SemanticSearchResponse> {
+  const params = new URLSearchParams();
+  
+  if (filters.q) params.append('q', filters.q);
+  if (filters.state) params.append('state', filters.state);
+  if (filters.subseccd) params.append('subseccd', filters.subseccd.toString());
+  if (filters.search_type) params.append('search_type', filters.search_type);
+  if (filters.limit) params.append('limit', filters.limit.toString());
+  
+  const queryString = params.toString();
+  const endpoint = queryString ? `/semantic-search/?${queryString}` : '/semantic-search/';
+  
+  return fetchApi<SemanticSearchResponse>(endpoint);
 }
 
 export function formatCurrency(amount: string | number): string {

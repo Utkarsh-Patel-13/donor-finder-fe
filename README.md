@@ -5,9 +5,12 @@ A modern web application for discovering foundations, grantmakers, and donors to
 ## Features
 
 - **Donor Discovery**: Browse through a paginated grid of nonprofit organizations and foundations
+- **Semantic Search**: Natural language search with AI-powered relevance scoring
+- **Advanced Filtering**: Filter by state, organization type (501c3, etc.), and search type
 - **Detailed Profiles**: View comprehensive donor information including financial data and filing history
 - **Financial Insights**: Display revenue, assets, expenses, and liabilities with year-over-year comparisons
 - **Filing History**: Access historical tax filings with downloadable PDFs
+- **Search Results**: Relevance scoring with star ratings and match type indicators
 - **Mobile-First Design**: Responsive design optimized for all device sizes
 - **Modern UI**: Built with shadcn/ui components for a clean, professional interface
 
@@ -67,6 +70,7 @@ The frontend integrates with the Donor Finder Backend API:
 
 - `GET /api/v1/organizations/?limit={limit}&offset={offset}` - List organizations with pagination
 - `GET /api/v1/organizations/{ein}` - Get organization details with filing history
+- `GET /api/v1/semantic-search/?q={query}&state={state}&subseccd={code}&search_type={type}&limit={limit}` - Semantic search with filters
 
 ### Environment Variables
 
@@ -86,8 +90,10 @@ app/
 components/
 ├── ui/                  # shadcn/ui components
 ├── donor-card.tsx       # Donor card component
+├── donor-search-card.tsx # Enhanced donor card for search results
+├── donor-search.tsx     # Search interface with filters
 ├── donor-details.tsx    # Donor detail view
-├── donor-grid.tsx       # Paginated donor grid
+├── donor-grid.tsx       # Paginated donor grid with search
 ├── donor-grid-skeleton.tsx  # Loading skeleton
 └── filing-history.tsx   # Filing history component
 
@@ -102,11 +108,24 @@ lib/
 
 ### DonorGrid
 - Displays paginated list of donors in a responsive grid
+- Integrates search and browse modes seamlessly
 - Includes loading states and error handling
 - Smooth pagination with URL state management
 
+### DonorSearch
+- Natural language search input with example queries
+- Advanced filters for state, organization type, and search method
+- Real-time filter management with clear all functionality
+- Collapsible filter panel for better mobile experience
+
+### DonorSearchCard
+- Enhanced donor card for search results
+- Displays relevance score with star rating system
+- Highlights matching text in organization names
+- Shows match type (semantic, keyword, hybrid)
+
 ### DonorCard
-- Compact donor information display
+- Compact donor information display for browse mode
 - Shows location, NTEE code, and last update
 - Hover effects and click navigation
 

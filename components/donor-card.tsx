@@ -34,11 +34,6 @@ export function DonorCard({ organization }: DonorCardProps) {
             <span className="line-clamp-1">{location}</span>
           </div>
           
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Building2 className="h-4 w-4 flex-shrink-0" />
-            <span className="line-clamp-1">{organization.address}</span>
-          </div>
-          
           <div className="flex flex-wrap gap-2">
             {organization.ntee_code && (
               <Badge variant="secondary" className="text-xs">
@@ -50,9 +45,6 @@ export function DonorCard({ organization }: DonorCardProps) {
             </Badge>
           </div>
           
-          <div className="text-xs text-muted-foreground">
-            Last updated: {new Date(organization.updated_at).toLocaleDateString()}
-          </div>
         </CardContent>
       </Card>
     </Link>

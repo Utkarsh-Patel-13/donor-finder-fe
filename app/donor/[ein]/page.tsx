@@ -1,4 +1,4 @@
-import { getOrganization } from "@/lib/api";
+import { getOrganization, getOrganizationEnrichment } from "@/lib/api";
 import { DonorDetails } from "@/components/donor-details";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +13,10 @@ export default async function DonorPage({ params }: DonorPageProps) {
   const { ein } = await params;
   
   try {
-    const organization = await getOrganization(parseInt(ein));
+    const [organization, enrichment] = await Promise.all([
+      getOrganization(parseInt(ein)),
+      getOrganizationEnrichment(parseInt(ein))
+    ]);
     
     return (
       <div className="min-h-screen bg-background">
@@ -39,7 +42,7 @@ export default async function DonorPage({ params }: DonorPageProps) {
         </header>
         
         <main className="container mx-auto px-4 py-8">
-          <DonorDetails organization={organization} />
+          <DonorDetails organization={organization} enrichment={enrichment} />
         </main>
       </div>
     );
