@@ -22,58 +22,6 @@ interface DonorSearchProps {
   currentFilters: SearchFilters;
 }
 
-const US_STATES = [
-  { value: "AL", label: "Alabama" },
-  { value: "AK", label: "Alaska" },
-  { value: "AZ", label: "Arizona" },
-  { value: "AR", label: "Arkansas" },
-  { value: "CA", label: "California" },
-  { value: "CO", label: "Colorado" },
-  { value: "CT", label: "Connecticut" },
-  { value: "DE", label: "Delaware" },
-  { value: "FL", label: "Florida" },
-  { value: "GA", label: "Georgia" },
-  { value: "HI", label: "Hawaii" },
-  { value: "ID", label: "Idaho" },
-  { value: "IL", label: "Illinois" },
-  { value: "IN", label: "Indiana" },
-  { value: "IA", label: "Iowa" },
-  { value: "KS", label: "Kansas" },
-  { value: "KY", label: "Kentucky" },
-  { value: "LA", label: "Louisiana" },
-  { value: "ME", label: "Maine" },
-  { value: "MD", label: "Maryland" },
-  { value: "MA", label: "Massachusetts" },
-  { value: "MI", label: "Michigan" },
-  { value: "MN", label: "Minnesota" },
-  { value: "MS", label: "Mississippi" },
-  { value: "MO", label: "Missouri" },
-  { value: "MT", label: "Montana" },
-  { value: "NE", label: "Nebraska" },
-  { value: "NV", label: "Nevada" },
-  { value: "NH", label: "New Hampshire" },
-  { value: "NJ", label: "New Jersey" },
-  { value: "NM", label: "New Mexico" },
-  { value: "NY", label: "New York" },
-  { value: "NC", label: "North Carolina" },
-  { value: "ND", label: "North Dakota" },
-  { value: "OH", label: "Ohio" },
-  { value: "OK", label: "Oklahoma" },
-  { value: "OR", label: "Oregon" },
-  { value: "PA", label: "Pennsylvania" },
-  { value: "RI", label: "Rhode Island" },
-  { value: "SC", label: "South Carolina" },
-  { value: "SD", label: "South Dakota" },
-  { value: "TN", label: "Tennessee" },
-  { value: "TX", label: "Texas" },
-  { value: "UT", label: "Utah" },
-  { value: "VT", label: "Vermont" },
-  { value: "VA", label: "Virginia" },
-  { value: "WA", label: "Washington" },
-  { value: "WV", label: "West Virginia" },
-  { value: "WI", label: "Wisconsin" },
-  { value: "WY", label: "Wyoming" },
-];
 
 const SUBSECTION_CODES = [
   { value: 3, label: "501(c)(3) - Charitable" },
@@ -112,7 +60,7 @@ export function DonorSearch({ onSearch, onClear, isLoading, currentFilters }: Do
     onSearch(newFilters);
   };
 
-  const hasActiveFilters = Boolean(filters.q || filters.state || filters.subseccd);
+  const hasActiveFilters = Boolean(filters.q || filters.subseccd);
   const hasActiveSearch = Boolean(currentFilters.q);
 
   return (
@@ -182,26 +130,7 @@ export function DonorSearch({ onSearch, onClear, isLoading, currentFilters }: Do
         {/* Filters Panel */}
         {showFilters && (
           <div className="border-t pt-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">State</label>
-                <Select
-                  value={filters.state || "all"}
-                  onValueChange={(value) => setFilters({ ...filters, state: value === "all" ? undefined : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All states" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All states</SelectItem>
-                    {US_STATES.map((state) => (
-                      <SelectItem key={state.value} value={state.value}>
-                        {state.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               <div>
                 <label className="text-sm font-medium mb-2 block">Organization Type</label>
@@ -263,17 +192,6 @@ export function DonorSearch({ onSearch, onClear, isLoading, currentFilters }: Do
                 <button
                   onClick={() => setFilters({ ...filters, q: undefined })}
                   className="ml-2 hover:text-primary-foreground/80"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {filters.state && (
-              <Badge variant="secondary">
-                State: {filters.state}
-                <button
-                  onClick={() => setFilters({ ...filters, state: undefined })}
-                  className="ml-2"
                 >
                   <X className="h-3 w-3" />
                 </button>

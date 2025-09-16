@@ -64,7 +64,6 @@ export interface SemanticSearchResponse {
 
 export interface SearchFilters {
   q?: string;
-  state?: string;
   subseccd?: number;
   search_type?: 'semantic' | 'keyword' | 'hybrid';
   limit?: number;
