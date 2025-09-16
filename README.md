@@ -16,168 +16,62 @@ A modern web application for discovering foundations, grantmakers, and donors to
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 with App Router
+- **Framework**: Next.js 15 with App Router and Turbopack
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui with Radix UI primitives
 - **Icons**: Lucide React
 - **Package Manager**: pnpm
 
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- pnpm
-- Access to the Donor Finder Backend API
+Ensure you have the following installed:
+- **Node.js** 18.17+ or 20+ (recommended: use the latest LTS version)
+- **pnpm** 8+ (install via `npm install -g pnpm`)
+- **Git** for version control
 
-### Installation
+### Local Development Setup
 
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone <repository-url>
 cd donor_finder_frontend
 ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 ```bash
 pnpm install
 ```
 
-3. Configure the API endpoint:
-   - Set the `NEXT_PUBLIC_API_URL` environment variable, or
-   - Update the `config.apiUrl` in `lib/config.ts`
+3. **Environment Configuration:**
+   
+   Create a `.env.local` file in the root directory (optional):
+```bash
+# Optional: Override the default API URL
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
 
-4. Start the development server:
+   **Note**: If no environment variable is set, the app defaults to `http://0.0.0.0:8000/api/v1`
+
+4. **Start the development server:**
 ```bash
 pnpm dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. **Open the application:**
+   - Navigate to [http://localhost:3000](http://localhost:3000)
+   - The app will automatically reload when you make changes
 
-### Build for Production
+### Production Build
 
 ```bash
+# Build the application
 pnpm build
+
+# Start the production server
 pnpm start
 ```
 
-## API Integration
-
-The frontend integrates with the Donor Finder Backend API:
-
-### Endpoints Used
-
-- `GET /api/v1/organizations/?limit={limit}&offset={offset}` - List organizations with pagination
-- `GET /api/v1/organizations/{ein}` - Get organization details with filing history
-- `GET /api/v1/semantic-search/?q={query}&state={state}&subseccd={code}&search_type={type}&limit={limit}` - Semantic search with filters
-
-### Environment Variables
-
-- `NEXT_PUBLIC_API_URL` - Backend API base URL (default: `http://0.0.0.0:8000/api/v1`)
-
-## Project Structure
-
-```
-app/
-├── donor/[ein]/         # Dynamic donor detail pages
-│   ├── page.tsx         # Donor detail page
-│   └── not-found.tsx    # 404 page for invalid donors
-├── globals.css          # Global styles
-├── layout.tsx           # Root layout
-└── page.tsx             # Home page
-
-components/
-├── ui/                  # shadcn/ui components
-├── donor-card.tsx       # Donor card component
-├── donor-search-card.tsx # Enhanced donor card for search results
-├── donor-search.tsx     # Search interface with filters
-├── donor-details.tsx    # Donor detail view
-├── donor-grid.tsx       # Paginated donor grid with search
-├── donor-grid-skeleton.tsx  # Loading skeleton
-└── filing-history.tsx   # Filing history component
-
-lib/
-├── api.ts              # API client functions
-├── config.ts           # Configuration
-├── types.ts            # TypeScript type definitions
-└── utils.ts            # Utility functions
-```
-
-## Key Components
-
-### DonorGrid
-- Displays paginated list of donors in a responsive grid
-- Integrates search and browse modes seamlessly
-- Includes loading states and error handling
-- Smooth pagination with URL state management
-
-### DonorSearch
-- Natural language search input with example queries
-- Advanced filters for state, organization type, and search method
-- Real-time filter management with clear all functionality
-- Collapsible filter panel for better mobile experience
-
-### DonorSearchCard
-- Enhanced donor card for search results
-- Displays relevance score with star rating system
-- Highlights matching text in organization names
-- Shows match type (semantic, keyword, hybrid)
-
-### DonorCard
-- Compact donor information display for browse mode
-- Shows location, NTEE code, and last update
-- Hover effects and click navigation
-
-### DonorDetails
-- Comprehensive donor profile page
-- Financial overview with key metrics
-- External links to GuideStar and NCCS
-
-### FilingHistory
-- Historical tax filing data
-- Year-over-year revenue comparison
-- Downloadable PDF links
-
-## Responsive Design
-
-The application is fully responsive with breakpoints:
-- Mobile: < 768px (single column)
-- Tablet: 768px - 1024px (2 columns)
-- Desktop: 1024px - 1280px (3 columns)
-- Large Desktop: > 1280px (4 columns)
-
-## Performance Features
-
-- Server-side rendering with Next.js App Router
-- Optimized images and fonts
-- Code splitting and lazy loading
-- Efficient pagination with minimal data fetching
-
-## Development
-
-### Available Scripts
-
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server
-- `pnpm lint` - Run ESLint
-
-### Adding New Components
-
-1. Create component in `components/` directory
-2. Export from component file
-3. Import and use in pages or other components
-4. Add TypeScript types as needed
-
-## Contributing
-
-1. Follow the existing code style and patterns
-2. Use TypeScript for all new code
-3. Ensure responsive design for new components
-4. Test on multiple screen sizes
-5. Run linting before committing
-
-## License
-
-This project is part of the Donor Finder MVP application.
+The production server will run on [http://localhost:3000](http://localhost:3000) by default.

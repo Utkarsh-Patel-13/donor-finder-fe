@@ -47,8 +47,6 @@ export async function searchOrganizations(filters: SearchFilters): Promise<Seman
   const params = new URLSearchParams();
   
   if (filters.q) params.append('q', filters.q);
-  if (filters.state) params.append('state', filters.state);
-  if (filters.subseccd) params.append('subseccd', filters.subseccd.toString());
   if (filters.search_type) params.append('search_type', filters.search_type);
   if (filters.limit) params.append('limit', filters.limit.toString());
   
